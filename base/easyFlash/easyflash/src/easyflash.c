@@ -99,11 +99,11 @@ EfErrCode easyflash_init(void) {
 
     if (result == EF_NO_ERR) {
         init_ok = true;
-        EF_INFO("EasyFlash V%s is initialize success.\n", EF_SW_VERSION);
+        EF_INFO("EasyFlash V%s is initialize success.\r\n", EF_SW_VERSION);
     } else {
-        EF_INFO("EasyFlash V%s is initialize fail.\n", EF_SW_VERSION);
+        EF_INFO("EasyFlash V%s is initialize fail.\r\n", EF_SW_VERSION);
     }
-    EF_INFO("You can get the latest version on https://github.com/armink/EasyFlash .\n");
+    EF_INFO("You can get the latest version on https://github.com/armink/EasyFlash .\r\n");
 
     return result;
 }

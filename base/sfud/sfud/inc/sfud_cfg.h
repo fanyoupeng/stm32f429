@@ -29,19 +29,19 @@
 #ifndef _SFUD_CFG_H_
 #define _SFUD_CFG_H_
 
-#define SFUD_DEBUG_MODE
+#undef SFUD_DEBUG_MODE
 
 #define SFUD_USING_SFDP
 
 #define SFUD_USING_FLASH_INFO_TABLE
 
 enum {
-    SFUD_XXXX_DEVICE_INDEX = 0,
+    SFUD_W25Q32_DEVICE_INDEX = 0,
 };
 
 #define SFUD_FLASH_DEVICE_TABLE                                                \
 {                                                                              \
-    [SFUD_XXXX_DEVICE_INDEX] = {.name = "XXXX", .spi.name = "SPIX"},           \
+    [SFUD_W25Q32_DEVICE_INDEX] = {.name = "W25Q32", .spi.name = "SPI4"},           \
 }
 
 #define SFUD_USING_QSPI

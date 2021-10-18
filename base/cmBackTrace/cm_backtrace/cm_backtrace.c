@@ -255,7 +255,7 @@ static void dump_stack(uint32_t stack_start_addr, size_t stack_size, uint32_t *s
     }
     cmb_println(print_info[PRINT_THREAD_STACK_INFO]);
     for (; (uint32_t) stack_pointer < stack_start_addr + stack_size; stack_pointer++) {
-        cmb_println("  addr: %08x    data: %08x", stack_pointer, *stack_pointer);
+        cmb_println("  addr: %p    data: %08lx", stack_pointer, *stack_pointer);
     }
     cmb_println("====================================");
 }

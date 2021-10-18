@@ -28,6 +28,12 @@
 
 #include <easyflash.h>
 #include <stdarg.h>
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "sfud.h"
+
+static SemaphoreHandle_t easyFlashMutex;
+static char log_buf[128];
 
 /* default environment variables set for user */
 static const ef_env default_env_set[] = {
@@ -44,7 +50,12 @@ static const ef_env default_env_set[] = {
  */
 EfErrCode ef_port_init(ef_env const **default_env, size_t *default_env_size) {
     EfErrCode result = EF_NO_ERR;
-
+	sfud_flash* pFlash =  sfud_get_device(SFUD_W25Q32_DEVICE_INDEX);
+	if(pFlash == NULL || pFlash->init_ok == false) {
+		DEBUG("sfud_get_device fail\n");
+		return EF_ENV_INIT_FAILED;
+	}
+	easyFlashMutex = xSemaphoreCreateMutex();
     *default_env = default_env_set;
     *default_env_size = sizeof(default_env_set) / sizeof(default_env_set[0]);
 
@@ -65,7 +76,9 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size) {
     EfErrCode result = EF_NO_ERR;
 
     /* You can add your code under here. */
-
+	sfud_flash* pFlash =  sfud_get_device(SFUD_W25Q32_DEVICE_INDEX);
+	if(sfud_read(pFlash, addr, size, (uint8_t *)buf) != SFUD_SUCCESS)
+		result = EF_READ_ERR;
     return result;
 }
 
@@ -86,7 +99,10 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size) {
     EF_ASSERT(addr % EF_ERASE_MIN_SIZE == 0);
 
     /* You can add your code under here. */
-
+	sfud_flash* pFlash =  sfud_get_device(SFUD_W25Q32_DEVICE_INDEX);
+	if(sfud_erase(pFlash, addr, size) != SFUD_SUCCESS) {
+		result = EF_ERASE_ERR;
+	}
     return result;
 }
 /**
@@ -104,7 +120,11 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size) {
     EfErrCode result = EF_NO_ERR;
     
     /* You can add your code under here. */
+	sfud_flash* pFlash =  sfud_get_device(SFUD_W25Q32_DEVICE_INDEX);
 
+    if(sfud_write(pFlash, addr, size, (const uint8_t *)buf) != SFUD_SUCCESS) {
+        result = EF_WRITE_ERR;
+    }
     return result;
 }
 
@@ -114,7 +134,7 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size) {
 void ef_port_env_lock(void) {
     
     /* You can add your code under here. */
-    
+    xSemaphoreTakeRecursive(easyFlashMutex, portMAX_DELAY);
 }
 
 /**
@@ -123,7 +143,7 @@ void ef_port_env_lock(void) {
 void ef_port_env_unlock(void) {
     
     /* You can add your code under here. */
-    
+    xSemaphoreGiveRecursive(easyFlashMutex);
 }
 
 
@@ -146,7 +166,8 @@ void ef_log_debug(const char *file, const long line, const char *format, ...) {
     va_start(args, format);
 
     /* You can add your code under here. */
-    
+    vsprintf(log_buf, format, args);
+    ef_print("%s", log_buf);
     va_end(args);
 
 #endif
@@ -166,7 +187,8 @@ void ef_log_info(const char *format, ...) {
     va_start(args, format);
 
     /* You can add your code under here. */
-    
+    vsprintf(log_buf, format, args);
+    ef_print("%s", log_buf);
     va_end(args);
 }
 /**
@@ -182,6 +204,7 @@ void ef_print(const char *format, ...) {
     va_start(args, format);
 
     /* You can add your code under here. */
-    
+    vsprintf(log_buf, format, args);
+    printf("%s", log_buf);
     va_end(args);
 }

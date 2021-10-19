@@ -23,7 +23,7 @@
 加入了一些开源项目，如下：
 
 + [freertos](https://github.com/FreeRTOS/FreeRTOS-Kernel):实时系统
-+ [letterShell](https://github.com/NevermindZZT/letter-shell) :一个功能强大的嵌入式shell)
++ [letterShell](https://github.com/NevermindZZT/letter-shell) :一个功能强大的嵌入式shell
 + [cmBackTrace](https://github.com/armink/CmBacktrace):ARM Cortex-M 系列 MCU 错误追踪库
 + [easyFlash](https://github.com/armink/EasyFlash):开源的轻量级嵌入式Flash存储器库
 + [sfud](https://github.com/armink/SFUD):串行 Flash 通用驱动库
